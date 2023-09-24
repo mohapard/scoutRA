@@ -437,7 +437,10 @@ else:
             if st.button("Change Image"):
                 if uploaded_imageedit is not None:
                     # Use PIL to open the image (optional)
-                    imagenew = Image.open(uploaded_imageedit).resize((150, 200), Image.ANTIALIAS)
+                    imagenew = Image.open(uploaded_imageedit).resize((150, 200), Image.LANCZOS)
+            
+                    imagenew = ImageOps.exif_transpose(imagenew)
+                    imagenew = ImageOps.expand(imagenew,border=5,fill='blue')
                     # Generate a unique filename based on a UUID
                     
                     # TODO: Add any image manipulation or validation here
