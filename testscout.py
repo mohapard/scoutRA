@@ -11,6 +11,7 @@ import io
 import numpy as np
 from datetime import datetime,date
 import math
+from PIL import ImageOps
 
 
 translations = {
@@ -307,7 +308,8 @@ else:
         uploaded_image = st.file_uploader("Choose an image.../...اختر صورة", type=["jpg", "png", "jpeg"],key=1)
         if uploaded_image is not None and 'addimage' not in st.session_state:
             # Use PIL to open the image (optional)
-            image = Image.open(uploaded_image).resize((150, 200), Image.ANTIALIAS)
+            image = Image.open(uploaded_image).resize((150, 200), Image.LANCZOS)
+            image = ImageOps.exif_transpose(image)
             # Generate a unique filename based on a UUID
             st.session_state['addfilename'] = f"{uuid4().hex}.png"
             # TODO: Add any image manipulation or validation here
