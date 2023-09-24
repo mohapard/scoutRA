@@ -311,7 +311,7 @@ else:
             image = Image.open(uploaded_image).resize((150, 200), Image.LANCZOS)
             
             image = ImageOps.exif_transpose(image)
-            image = ImageOps.expand(image,border=5,fill='black')
+            image = ImageOps.expand(image,border=5,fill='blue')
             # Generate a unique filename based on a UUID
             st.session_state['addfilename'] = f"{uuid4().hex}.png"
             # TODO: Add any image manipulation or validation here
