@@ -309,6 +309,7 @@ else:
         if uploaded_image is not None and 'addimage' not in st.session_state:
             # Use PIL to open the image (optional)
             image = Image.open(uploaded_image).resize((150, 200), Image.LANCZOS)
+            image = ImageOps.expand(image,border=300,fill='black')
             image = ImageOps.exif_transpose(image)
             # Generate a unique filename based on a UUID
             st.session_state['addfilename'] = f"{uuid4().hex}.png"
