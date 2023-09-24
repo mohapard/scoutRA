@@ -109,8 +109,18 @@ translations = {
         "Data Summarization": "تلخيص البيانات",
         "Full Table": "الجدول الكامل",
         "Page": "صفحة",
-        "Squad": "فريق"
-
+        "Squad": "فريق",
+        "Player name missing":"اسم اللاعب مفقود",
+        "image uploaded":"تم تحميل الصورة",
+        "Added without image":"تمت الإضافة بدون صورة",
+        "Player successfully added!":"تم إضافة اللاعب بنجاح!",
+        "Select Player":"اختر اللاعب",
+        "Choose an image":"اختر صورة",
+        "Change Image":"تغييرالصورة",
+        "Remove Image":"إزالة الصورة",
+        "upload new image":"تحميل صورة جديدة",
+        "Player name not found in player_data":"اسم اللاعب غير موجود في player_data.",
+        "Player successfully Edited!":"تم تغيير اللاعب بنجاح!",
     }
 }
 
@@ -265,7 +275,7 @@ else:
         player_data['age'] = player_data['date_of_birth'].apply(calculate_age)
 
     st.sidebar.image(lgo)
-    pages = ["Add Player/أضف لاعب", "Edit Player/","Player Statistics/إحصائيات اللاعب", "Data Summarization/تلخيص البيانات", "Full Table/الجدول الكامل","Players List/قائمة اللاعبين"]
+    pages = ["Add Player/أضف لاعب", "Edit Player/تغيير البيانات","Player Statistics/إحصائيات اللاعب", "Data Summarization/تلخيص البيانات", "Full Table/الجدول الكامل","Players List/قائمة اللاعبين"]
     page = st.sidebar.selectbox("Page", pages)
 
     # Add all the required filters
@@ -305,7 +315,7 @@ else:
        
         
         # Add this in your Add Player section
-        uploaded_image = st.file_uploader("Choose an image.../...اختر صورة", type=["jpg", "png", "jpeg"],key=1)
+        uploaded_image = st.file_uploader(get_string(st.session_state['language'],"Choose an image"), type=["jpg", "png", "jpeg"],key=1)
         if uploaded_image is not None and 'addimage' not in st.session_state:
             # Use PIL to open the image (optional)
             image = Image.open(uploaded_image).resize((150, 200), Image.LANCZOS)
@@ -322,7 +332,7 @@ else:
         
         if 'addimage' in st.session_state :
             st.image(st.session_state['addimage'])
-            if st.button("Remove Image"):
+            if st.button(get_string(st.session_state['language'],"Remove Image")):
                 del st.session_state["addimage"]
                 del st.session_state["addfilename"]
             
@@ -375,7 +385,7 @@ else:
             # Create an empty DataFrame with headers
             # Upload the image to S3 and get the S3 key'
             if player["name"] =="":
-                st.error("Player name missing")
+                st.error(get_string(st.session_state['language'],"Player name missing"))
             else:
                 s3_key = None
                 if "addimage" in st.session_state:
@@ -386,10 +396,10 @@ else:
                     player['image_s3_key'] =s3_key
                     
                     
-                    st.success("image uploaded")
+                    st.success(get_string(st.session_state['language'],"image uploaded"))
                     uploaded_image = None
                 else:
-                    st.error("No image")
+                    st.error(get_string(st.session_state['language'],"Added without image"))
                     uploaded_image = None
 
            
@@ -399,11 +409,11 @@ else:
                 player_data = pd.concat([player_data, player_df], ignore_index=True)
                 
                 save_player_data(player_data)
-                st.success("Player successfully added!")
+                st.success(get_string(st.session_state['language'],"Player successfully added!"))
         
 
     
-    elif page == "Edit Player/" and len(player_data)>0:
+    elif page == "Edit Player/تغيير البيانات" and len(player_data)>0:
         #st.title(get_string(st.session_state['language'],'Edit Player'))
 
         # Define empty dictionary to hold form inputs
@@ -414,7 +424,7 @@ else:
         player_row=None
         
         
-        selected_player = st.selectbox("Select Player", player_data['name'].unique())
+        selected_player = st.selectbox(get_string(st.session_state['language'],"Select Player"), player_data['name'].unique())
         if "player_name" in st.session_state:
             if st.session_state["player_name"] != selected_player:
                 if "image" in st.session_state:
@@ -433,8 +443,8 @@ else:
                 st.image(st.session_state['image'])
                 st.session_state["s3_keyedit"] = player_row['image_s3_key']
         with col2:
-            uploaded_imageedit = st.file_uploader("Choose an image.../...اختر صورة", type=["jpg", "png", "jpeg"],key=2)
-            if st.button("Change Image"):
+            uploaded_imageedit = st.file_uploader(get_string(st.session_state['language'],"Choose an image"), type=["jpg", "png", "jpeg"],key=2)
+            if st.button(get_string(st.session_state['language'],"Change Image")):
                 if uploaded_imageedit is not None:
                     # Use PIL to open the image (optional)
                     imagenew = Image.open(uploaded_imageedit).resize((150, 200), Image.LANCZOS)
@@ -456,7 +466,7 @@ else:
                     del uploaded_imageedit
                     st.experimental_rerun()
                 else:
-                    st.error("upload new image")
+                    st.error(get_string(st.session_state['language'],"upload new image"))
             
             
         
@@ -536,9 +546,9 @@ else:
             if index_to_update:
                 player_data.loc[index_to_update[0]] = player_df.iloc[0]
             else:
-                st.write("Player name not found in player_data.")
+                st.write(get_string(st.session_state['language'],"Player name not found in player_data."))
             save_player_data(player_data)
-            st.success("Player successfully Edited!")
+            st.success(get_string(st.session_state['language'],"Player successfully Edited!"))
 
   
 
